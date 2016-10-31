@@ -13,18 +13,72 @@ Se ha capturado una sesión SIP (archivo sip.cap.gz), que se puede abrir con Wir
 
 2. Observa que las tramas capturadas corresponden a una sesión SIP con Ekiga, un cliente de VoIP para GNOME. Responde a las siguientes cuestiones:
  ** ¿Cuántos paquetes componen la captura?
+        954 Paquetes.
+        
  ** ¿Cuánto tiempo dura la captura?
+        56.149345 Segundos.
+        
  ** ¿Qué IP tiene la máquina donde se ha efectuado la captura? ¿Se trata de una IP pública o de una IP privada? ¿Por qué lo sabes?
+        IP = 192.168.1.34, como podemos observar la IP está en el rango 192.168.0.0 a 192.168.255.255, por lo tanto será una IP privada. Se utiliza para identificar equipos o dispositivos dentro de una red doméstica o privada.
 
 
 3. Antes de analizar las tramas, mira las estadísticas generales que aparecen en el menú de Statistics. En el apartado de jerarquía de protocolos (Protocol Hierarchy) se puede ver el porcentaje del tráfico correspondiente al protocolo TCP y UDP.
  ** ¿Cuál de los dos es mayor? ¿Es esto consistente con una aplicación que transmite en tiempo real?
+        El protocolo más utilizado será User Datagram Protocol(UDP) con el 96,2% de los paquetes totales y un 98.9% de los bits totales de tráfico.
+        
  ** ¿Qué otros protocolos podemos ver en la jerarquía de protocolos?
+        "Protocol"                              ,"Percent Packets"
+        
+        "Ethernet"                              ,100
+        "Internet Protocol Version 4"           ,98.95178197064989
+        "User Datagram Protocol"                ,96.226415094339629
+        "Simple Traversal of UDP Through NAT"   ,5.1362683438155132
+        "Session Initiation Protocol"           ,2.6205450733752622
+        "Real-Time Transport Protocol"          ,84.591194968553452
+        "ITU-T Recommendation H.261"            ,20.545073375262053
+        "Real-time Transport Control Protocol"  ,0.20964360587002095
+        "Real-time Transport Control Protocol"  ,0.20964360587002095
+        "Domain Name System"                    ,2.9350104821802936
+        "Data"                                  ,0.10482180293501048
+        "Transmission Control Protocol"         ,2.09643605870020982
+        "Hypertext Transfer Protocol"           ,0.419287211740041918
+        "Line-based text data"                  ,0.20964360587002095
+        "Internet Control Message Protocol"     ,0.62893081761006286
+        "Address Resolution Protocol"           ,1.0482180293501049
+
 
 
 4. Observa por encima el flujo de tramas en el menú de Statistics en IO Graphs. La captura que estamos viendo incluye desde la inicialización (registro) de la aplicación hasta su finalización, con una llamada entremedias.
  ** Filtra por sip para conocer cuándo se envían paquetes SIP. ¿En qué segundos tienen lugar esos envíos?
+ 
+         "46","7.343770","192.168.1.34","86.64.162.35","SIP","523","Request: REGISTER sip:ekiga.net  (1 binding) | "
+         "50","7.425202","86.64.162.35","192.168.1.34","SIP","714","Status: 401 Unauthorized | "
+         "51","7.427990","192.168.1.34","86.64.162.35","SIP","712","Request: REGISTER sip:ekiga.net  (1 binding) | "
+         "54","7.512211","86.64.162.35","192.168.1.34","SIP","664","Status: 200 OK  (1 binding) | "
+         "56","7.567714","192.168.1.34","86.64.162.35","SIP","598","Request: SUBSCRIBE sip:grex@ekiga.net | "
+         "57","7.648107","86.64.162.35","192.168.1.34","SIP","641","Status: 489 Unsupported event package | "
+         "84","14.426793","192.168.1.34","86.64.162.35","SIP/SDP","982","Request: INVITE sip:500@ekiga.net | "
+         "85","14.599871","86.64.162.35","192.168.1.34","SIP","744","Status: 407 Proxy Authentication Required | "
+         "86","14.610573","192.168.1.34","86.64.162.35","SIP","483","Request: ACK sip:500@ekiga.net | "
+         "103","16.233522","192.168.1.34","86.64.162.35","SIP/SDP","1181","Request: INVITE sip:500@ekiga.net | "
+         "104","16.334756","86.64.162.35","192.168.1.34","SIP","615","Status: 100 trying -- your call is important to us | "
+         "105","16.343704","86.64.162.35","192.168.1.34","SIP/SDP","883","Status: 200 OK | "
+         "110","16.460741","192.168.1.34","86.64.162.35","SIP","799","Request: ACK sip:500@86.64.162.35:5080 | "
+         "924","38.119195","192.168.1.34","86.64.162.35","SIP","799","Request: BYE sip:500@86.64.162.35:5080 | "
+         "925","38.362649","192.168.1.34","86.64.162.35","SIP","799","Request: BYE sip:500@86.64.162.35:5080 | "
+         "927","38.362673","192.168.1.34","86.64.162.35","SIP","799","Request: BYE sip:500@86.64.162.35:5080 | "
+         "933","38.937875","192.168.1.34","86.64.162.35","SIP","799","Request: BYE sip:500@86.64.162.35:5080 | "
+         "938","39.154151","86.64.162.35","192.168.1.34","SIP","581","Status: 200 OK | "
+         "939","39.178064","86.64.162.35","192.168.1.34","SIP","581","Status: 200 OK | "
+         "940","39.204022","86.64.162.35","192.168.1.34","SIP","581","Status: 200 OK | "
+         "941","39.229683","86.64.162.35","192.168.1.34","SIP","581","Status: 200 OK | "
+         "950","55.694378","192.168.1.34","86.64.162.35","SIP","520","Request: REGISTER sip:ekiga.net  (remove 1 binding) | "
+         "951","55.774638","86.64.162.35","192.168.1.34","SIP","714","Status: 401 Unauthorized | "
+         "952","55.776662","192.168.1.34","86.64.162.35","SIP","709","Request: REGISTER sip:ekiga.net  (remove 1 binding) | "
+         "953","55.859934","86.64.162.35","192.168.1.34","SIP","598","Status: 200 OK  (0 bindings) | "
+         
  ** Y los paquetes con RTP, ¿cuándo se envían?
+        Los paquetes RTP se envian desde el segundo 17 hasta el segundo 38. RTP es un Protocolo el cual se complementa con varios otro Protocolos como lo son SIP. El protocolo RTP (Real-time  Transport Protocol) es portador del contenido de voz y vídeo que intercambian los participantes en una sesión establecida por SIP.
 
 
 
