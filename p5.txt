@@ -137,10 +137,13 @@ Se ha capturado una sesión SIP (archivo sip.cap.gz), que se puede abrir con Wir
 8. La trama 46 es la primera trama SIP. En un entorno como el de Internet, lo habitual es desconocer la dirección IP de la otra parte al realizar una llamada. Por eso, todo usuario registra su localización en un servidor Registrar. El Registrar guarda información sobre los usuarios en un servidor de localización que puede ser utilizado para localizar usuarios.
  ** ¿Qué dirección IP tiene el servidor Registrar?
         IP = 86.64.162.35
+        
  ** ¿A qué puerto (del servidor Registrar) se envían los paquetes SIP?
         Dst Port = 5060 (5060)
+        
  ** ¿Qué método SIP utiliza el UA para registrarse?
         User-Agent: Ekiga/2.0.3
+        
  ** Además de REGISTER, ¿qué instrucciones SIP entiende el UA?
         Allow: INVITE,ACK,OPTIONS,BYE,CANCEL,NOTIFY,REFER,MESSAGE
 
@@ -302,16 +305,30 @@ Captura una sesión SIP de una conversación con el número SIP sip:9999@qxip.ne
 
 17. Observa las diferencias en el inicio de la conversación entre el entorno del laboratorio y el del ejercicio anterior:
  ** ¿Es necesario el uso de DNS y STUN? ¿Por qué?
- ** ¿Son diferentes el registro y la descripción de la sesión?
+        No es necesario ya que estamos en una red pública.
 
+ ** ¿Son diferentes el registro y la descripción de la sesión?
+        No, son similares.
 
 18. Identifica las diferencias existentes entre esta conversación y la conversación anterior:
  ** ¿Cuántos flujos tenemos?
+        "Source Address",   "Source Port",  "Destination Address",  "Destination Port", "SSRC",     "Payload",  "Packets",  "Lost", "Max Delta (ms)",   "Max Jitter",   "Mean Jitter",  "Status"
+        "212.128.254.136",  5066,           "212.79.111.155",       10126,              2050326378, "g711U",    549,        0,      323.22,             47.44,          36.92,          ""
+        "212.79.111.155",   10126,          "212.128.254.136",      5066,               72358357,   "g711U",    560,        0,      50.67,              4.80,           1.42,           ""
+        En este caso tendremos dos flujos.
+        
  ** ¿Cuál es su periodicidad?
- ** ¿Cuánto es el valor máximo del delta y los valores medios y máximo del jitter?
- ** ¿Podrías reproducir la conversación desde Wireshark? ¿Cómo? Comprueba que poniendo un valor demasiado pequeño para el buffer de jitter, la conversación puede no tener la calidad necesaria.
- ** ¿Sabrías decir qué tipo de servicio ofrece sip:9999@qxip.net?
+        160 bytes por paquete RTP y 64.000bits/s, período 20 ms
 
+ ** ¿Cuánto es el valor máximo del delta y los valores medios y máximo del jitter?
+        Primera dirección: Max Jitter = 47.44, Jitter Medio = 36.92, Max Delta = 323.22
+        Segunda dirección: Max Jitter = 4.8, Jitter Medio = 1.42, Max Delta = 50.67
+        
+ ** ¿Podrías reproducir la conversación desde Wireshark? ¿Cómo? Comprueba que poniendo un valor demasiado pequeño para el buffer de jitter, la conversación puede no tener la calidad necesaria.
+        Si, en la opción "Play Streams".
+        
+ ** ¿Sabrías decir qué tipo de servicio ofrece sip:9999@qxip.net?
+        En nuestro caso "music@iptel.org", una llamada de prueba con música (Call music (sip:music@iptel.org) to listen to a wonderful fado of Anamar).
 
 
 [Al terminar el ejercicio es recomendable hacer commit de los ficheros modificados]
