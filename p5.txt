@@ -130,40 +130,79 @@ Se ha capturado una sesión SIP (archivo sip.cap.gz), que se puede abrir con Wir
 7. Hasta la trama 45 se puede observar una secuencia de tramas del protocolo STUN.
  ** ¿Por qué crees que se hace uso de este protocolo en esta captura? Busca en la Wikipedia.
         STUN es usado principalmente por teléfonos o software VoIP. Éste incorpora un cliente STUN que envía una petición a un servidor STUN. El servidor STUN informa entonces al cliente de la IP pública de este último y qué puerto ha sido abierto por NAT para permitir el tráfico entrante a la red del cliente.
+        
  ** ¿Estamos tras un NAT?
-
+        Si, en el contenido de ese paquete se nos especifica (Traversal of UDP through NAT).
 
 8. La trama 46 es la primera trama SIP. En un entorno como el de Internet, lo habitual es desconocer la dirección IP de la otra parte al realizar una llamada. Por eso, todo usuario registra su localización en un servidor Registrar. El Registrar guarda información sobre los usuarios en un servidor de localización que puede ser utilizado para localizar usuarios.
  ** ¿Qué dirección IP tiene el servidor Registrar?
+        IP = 86.64.162.35
  ** ¿A qué puerto (del servidor Registrar) se envían los paquetes SIP?
+        Dst Port = 5060 (5060)
  ** ¿Qué método SIP utiliza el UA para registrarse?
+        User-Agent: Ekiga/2.0.3
  ** Además de REGISTER, ¿qué instrucciones SIP entiende el UA?
-
+        Allow: INVITE,ACK,OPTIONS,BYE,CANCEL,NOTIFY,REFER,MESSAGE
 
 
 [Al terminar el ejercicio es recomendable hacer commit de los ficheros modificados]
 
 9. Fijémonos en las tramas siguientes a la número 46:
  ** ¿Se registra con éxito en el primer intento?
+        No, necesita autorización.
+        Paquete = "50","7.425202","86.64.162.35","192.168.1.34","SIP","714","Status: 401 Unauthorized | " 
+ 
  ** ¿Cómo sabemos si el registro se ha realizado correctamente o no?
+        El servidor enviará un "Status: 200 OK"
+        Paquete = "54","7.512211","86.64.162.35","192.168.1.34","SIP","664","Status: 200 OK  (1 binding) | "
+        
  ** ¿Podrías identificar las diferencias entre el primer intento y el segundo de registro? (fíjate en el tamaño de los paquetes y mira a qué se debe el cambio)
+        1º Paquete = "46","7.343770","192.168.1.34","86.64.162.35","SIP","523","Request: REGISTER sip:ekiga.net  (1 binding) | "
+        2º Paquete = "51","7.427990","192.168.1.34","86.64.162.35","SIP","712","Request: REGISTER sip:ekiga.net  (1 binding) | "
+        
+        El segundo paquete contiene el campo "Authoritation"
+        Digest username="grex", realm="ekiga.net", nonce="45a439ee7438aaea43ae8c7c2382922187f86c8b", uri="sip:ekiga.net", algorithm=md5, response="5267d4e49d707d4443baefa913e8ff90"
+        
  ** ¿Cuánto es el valor del tiempo de expiración de la sesión? Indica las unidades.
-
+        Expires: 3600 segundos
 
 10. Una vez registrados, podemos efectuar una llamada. Vamos a probar con el servicio de eco de Ekiga que nos permite comprobar si nos hemos conectado correctamente. El servicio de eco tiene la dirección sip:500@ekiga.net. Veamos el INVITE de cerca.
+        Paquete = "84","14.426793","192.168.1.34","86.64.162.35","SIP/SDP","982","Request: INVITE sip:500@ekiga.net | "
  ** ¿Puede verse el nombre del que efectúa la llamada, así como su dirección SIP?
+        SIP from address: sip:grex@ekiga.net
+        SIP Display info: "Gregorio Robles"
+        
  ** ¿Qué es lo que contiene el cuerpo de la trama? ¿En qué formato/protocolo está?
+        Características sobre las que se realizará la comunicación multimedia. Está en protocolo SDP.
+        
  ** ¿Tiene éxito el primer intento? ¿Cómo lo sabes?
+        No, recibirá este mensaje: "85","14.599871","86.64.162.35","192.168.1.34","SIP","744","Status: 407 Proxy Authentication Required | "
+        y posterirormente enviará este: "85","14.599871","86.64.162.35","192.168.1.34","SIP","744","Status: 407 Proxy Authentication Required | "
+        
  ** ¿En qué se diferencia el segundo INVITE más abajo del primero? ¿A qué crees que se debe esto?
-
-
+        Paquete = "85","14.599871","86.64.162.35","192.168.1.34","SIP","744","Status: 407 Proxy Authentication Required | "
+        contiene este campo: Proxy-Authorization: Digest username="grex", realm="ekiga.net", nonce="45a439f6ba5f681cd945fb7c40529fd1e0f28a81", uri="sip:500@ekiga.net", algorithm=md5, response="9a5627c14a8a433bd308d2ec54777240"
+        
 11. Una vez conectado, estudia el intercambio de tramas.
  ** ¿Qué protocolo(s) se utiliza(n)? ¿Para qué sirven estos protocolos?
+        RTP: Utilizado para la transmisión de información en tiempo real.
+        RTPC: Proporciona información de control.
+         
  ** ¿Cuál es el tamaño de paquete de los mismos?
+        RTP: Frame 122: 214 bytes on wire (1712 bits), 214 bytes captured (1712 bits)
+        RTCP: Frame 122: 214 bytes on wire (1712 bits), 214 bytes captured (1712 bits)
+        
  ** ¿Se utilizan bits de padding?
+        No, este estará a 0 (Padding: False)
+        
  ** ¿Cuál es la periodicidad de los paquetes que se envían?
- ** ¿Cuántos bits/segundo estamos enviando?
+        Timestamp: 160 bytes = 1280 bits/paquete
+        Enviamos a 64000bits/s 1280bits/paquete
+        Utilizando lo anterior mandamos 50 paquetes/segundo
+        Periodo = 1/50 segundos = 0.02 s
 
+ ** ¿Cuántos bits/segundo estamos enviando?
+        64.000bits/s
 
 
 [Al terminar el ejercicio es recomendable hacer commit de los ficheros modificados]
