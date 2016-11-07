@@ -208,37 +208,87 @@ Se ha capturado una sesión SIP (archivo sip.cap.gz), que se puede abrir con Wir
 [Al terminar el ejercicio es recomendable hacer commit de los ficheros modificados]
 
 12. Vamos a ver más a fondo el intercambio RTP. En Telephony hay una opción RTP. Empecemos mirando los flujos RTP.
+    "Source Address",   "Source Port",  "Destination Address",  "Destination Port", "Payload",  "Packets",  "Lost", "Max Delta (ms)",   "Max Jitter",   "Mean Jitter",  "Status"
+    "192.168.1.34",     5014,           "86.64.162.35",         19062,              "h261",     196,        0,      1290.47,            183.09,         153.24,         "Problem"
+    "192.168.1.34",     5010,           "86.64.162.35",         12440,              "g711A",    611,        0,      1290.44,            119.63,         42.50,          ""
+
  ** ¿Cuántos flujos hay? ¿por qué?
+        Habrán dos flujos
+ 
  ** ¿Cuántos paquetes se pierden?
+        Ninguno 
+ 
  ** ¿Cuál es el valor máximo del delta? ¿Y qué es lo que significa el valor de delta?
+        Primera dirección: 1290.47
+        Segunda dirección: 1290.44
+        
+        Maxima diferencia entre un paquete y la llegada del anterior.
+ 
  ** ¿Cuáles son los valores de jitter (medio y máximo)? ¿Qué quiere decir eso? ¿Estamos ante una conversación de calidad?
+        Primera dirección: Max = 183.09, Medio = 153.24
+        Segunda dirección: Max = 119.63, Medio = 42.50
+        
+        Determina la variación temporal que experimenta el retardo en una transmisión de paquetes entre los puntos inicial y final de la comunicación.
+        Para tener una conversación de calidad deberemos tener un valor pequeño. En este caso no tenemos demasiada calidad ya que si tenemos un jitter de 150 ms de ida y suponemos el mismo de vuelta ya estaríamos cubriendo los 300 ms necesarios para en una conversación de calidad.
+
+ 
 
 
 13. Elige un paquete RTP de audio. Analiza el flujo de audio en Telephony -> RTP -> Stream Analysis.
  ** ¿Cuánto valen el delta y el jitter para el primer paquete que ha llegado?
+        Ambos tienen valor 0.00ms
+        
  ** ¿Podemos saber si éste es el primer paquete que nos han enviado?
+        No, el numero de secuencia será aleatorio. 
+ 
  ** Los valores de jitter son menores de 10ms hasta un paquete dado. ¿Cuál?
+        Paquete = 247	20.449554	192.168.1.34	86.64.162.35	RTP	214	PT=ITU-T G.711 PCMA, SSRC=0xBF4AFD37, Seq=23421, Time=16320
+ 
  ** ¿A qué se debe el cambio tan brusco del jitter?
+        Se puede observar una reducción del ancho de banda a la mitad y un aumento considerable del valor delta.
+        
  ** ¿Es comparable este cambio con el tiempo desde la recepción del paquete anterior? ¿Por qué?
+        Si, el tiempo jitter y delta estan relacionados con los paquetes anteriores y siguientes.
+        
  ** ¿Cuál es la dependencia entre el tiempo transcurrido desde el paquete anterior y el valor de jitter?
-
+        Tienen una dependencia directa.
 
 14. En Telephony selecciona el menú VoIP calls. Verás que se lista la llamada de voz IP capturada en una ventana emergente. Selecciona esa llamada y pulsa el botón Graph.
+
  ** ¿Cuánto dura la conversación?
+        Aproximadamente 15 segundos.
+        
  ** ¿Cuáles son sus SSRC? ¿Por qué hay varios SSRCs? ¿Hay CSRCs?
+        SSRC: 0x43306582
+        SSRC: 0xBF4AFD37
+        Uno para cada flujo de transmisión.
+        
+        No hay CSRCs.
 
 
 15. Identifica la trama donde se finaliza la conversación.
+        Trama = "941","39.229683","86.64.162.35","192.168.1.34","SIP","581","Status: 200 OK | "
  ** ¿Qué método SIP se utiliza?
+        Metodo Bye
  ** ¿En qué trama(s)?
+         "924","38.119195","192.168.1.34","86.64.162.35","SIP","799","Request: BYE sip:500@86.64.162.35:5080 | "
+         "925","38.362649","192.168.1.34","86.64.162.35","SIP","799","Request: BYE sip:500@86.64.162.35:5080 | "
+         "927","38.362673","192.168.1.34","86.64.162.35","SIP","799","Request: BYE sip:500@86.64.162.35:5080 | "
+         "933","38.937875","192.168.1.34","86.64.162.35","SIP","799","Request: BYE sip:500@86.64.162.35:5080 | "
+         
  ** ¿Por qué crees que se envía varias veces?
-
+        Para asegurarnos la recepción ya que utilizamos un protocolo no fiable(UDP).
 
 16. Finalmente, se cierra la aplicación de VozIP.
  ** ¿Por qué aparece una instrucción SIP del tipo REGISTER?
+        Trama = "950","55.694378","192.168.1.34","86.64.162.35","SIP","520","Request: REGISTER sip:ekiga.net  (remove 1 binding) | "
+        Para eliminar el binding, cerrar la conexión.
+        
  ** ¿En qué trama sucede esto?
+         Trama = "950","55.694378","192.168.1.34","86.64.162.35","SIP","520","Request: REGISTER sip:ekiga.net  (remove 1 binding) | "
+ 
  ** ¿En qué se diferencia con la instrucción que se utilizó con anterioridad (al principio de la sesión)?
-
+        Expires: 0
 
 
 [Al terminar el ejercicio es recomendable hacer commit de los ficheros modificados]
